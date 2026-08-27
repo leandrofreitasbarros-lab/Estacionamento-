@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkControl - Estacionamento</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* LOGIN */
+
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #020617, #1d4ed8);
+        }
+
+        .login-box {
+            width: 400px;
+            max-width: 90%;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.4);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo .carro {
+            font-size: 55px;
+        }
+
+        .logo h1 {
+            margin-top: 10px;
+            font-size: 28px;
+        }
+
+        .logo h1 span {
+            color: #2563eb;
+        }
+
+        .logo p {
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .campo {
+            margin-bottom: 18px;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            outline: none;
+        }
+
+        .campo input:focus {
+            border-color: #2563eb;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-login:hover {
+            background: #1d4ed8;
+        }
+
+        .erro {
+            display: none;
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .dados {
+            text-align: center;
+            margin-top: 20px;
+            padding: 12px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        /* SISTEMA */
+
+        #sistema {
+            display: none;
+        }
+
+        header {
+            height: 75px;
+            background: #0f172a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+
+        header h1 {
+            font-size: 22px;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .admin {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-sair {
+            border: none;
+            background: #dc2626;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        /* CARDS */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+        }
+
+        .card .icone {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .card h2 {
+            color: #2563eb;
+            margin-top: 7px;
+            font-size: 27px;
+        }
+
+        /* MENU */
+
+        .menu {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .menu button {
+            padding: 11px 18px;
+            border: none;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #475569;
+            font-weight: bold;
+        }
+
+        .menu button:hover,
+        .menu button.ativo {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* SEÇÕES */
+
+        .secao {
+            display: none;
+        }
+
+        .secao.ativa {
+            display: block;
+        }
+
+        .topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .topo h2 {
+            font-size: 22px;
+        }
+
+        .btn-principal {
+            border: none;
+            background: #16a34a;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* TABELA */
+
+        .painel {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+        }
+
+        .pesquisa {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #0f172a;
+            color: white;
+            padding: 13px;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+
+        .status {
+            background: #dcfce7;
+            color: #15803d;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+
+        .btn-saida {
+            border: none;
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* VAGAS */
+
+        .vagas {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+
+        .vaga {
+            height: 100px;
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #15803d;
+        }
+
+        .vaga.ocupada {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #b91c1c;
+        }
+
+        .vaga strong {
+            font-size: 24px;
+        }
+
+        .vaga span {
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        /* MODAL */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.65);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.aberto {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 600px;
+            max-width: 100%;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .modal-topo {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .fechar {
+            border: none;
+            background: #f1f5f9;
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .formulario {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .formulario div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .formulario label {
+            margin-bottom: 7px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .formulario input,
+        .formulario select {
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .formulario button {
+            grid-column: 1 / -1;
+            padding: 13px;
+            border: none;
+            background: #16a34a;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* RESPONSIVO */
+
+        @media(max-width:900px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .vagas {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media(max-width:600px) {
+
+            header {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 17px;
+            }
+
+            .admin {
+                font-size: 12px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .vagas {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .formulario {
+                grid-template-columns: 1fr;
+            }
+
+            .menu {
+                overflow-x: auto;
+            }
+
+            .topo {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================================
+     LOGIN
+================================ -->
+
+<div class="login-page" id="login">
+
+    <div class="login-box">
+
+        <div class="logo">
+
+            <div class="carro">🚘</div>
+
+            <h1>
+                Park<span>Control</span>
+            </h1>
+
+            <p>
+                Sistema de Estacionamento
+            </p>
+
+        </div>
+
+        <form onsubmit="entrar(event)">
+
+            <div class="campo">
+
+                <label>Usuário</label>
+
+                <input
+                    type="text"
+                    id="usuario"
+                    placeholder="Digite o usuário"
+                    required
+                >
+
+            </div>
+
+            <div class="campo">
+
+                <label>Senha</label>
+
+                <input
+                    type="password"
+                    id="senha"
+                    placeholder="Digite a senha"
+                    required
+                >
+
+            </div>
+
+            <div class="erro" id="erro">
+                ❌ Usuário ou senha incorretos!
+            </div>
+
+            <button class="btn-login">
+                🔐 Entrar
+            </button>
+
+        </form>
+
+        <div class="dados">
+
+            <strong>Login de teste</strong><br><br>
+
+            Usuário: <strong>admin</strong><br>
+            Senha: <strong>1234</strong>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================
+     SISTEMA
+================================ -->
+
+<div id="sistema">
+
+    <header>
+
+        <div>
+            <h1>🚘 ParkControl</h1>
+            <p>Gestão de estacionamento</p>
+        </div>
+
+        <div class="admin">
+
+            👤 Administrador
+
+            <button
+                class="btn-sair"
+                onclick="sair()">
+                🚪 Sair
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <div class="container">
+
+        <!-- MENU -->
+
+        <div class="menu">
+
+            <button
+                class="ativo"
+                onclick="pagina('dashboard', this)">
+                📊 Dashboard
+            </button>
+
+            <button
+                onclick="pagina('veiculos', this)">
+                🚗 Veículos
+            </button>
+
+            <button
+                onclick="pagina('vagas', this)">
+                🅿️ Vagas
+            </button>
+
+        </div>
+
+
+        <!-- =============================
+             DASHBOARD
+        ============================== -->
+
+        <section
+            id="dashboard"
+            class="secao ativa">
+
+            <div class="topo">
+
+                <div>
+                    <h2>Dashboard</h2>
+
+                    <p>
+                        Visão geral do estacionamento
+                    </p>
+                </div>
+
+                <button
+                    class="btn-principal"
+                    onclick="abrirModal()">
+
+                    + Registrar veículo
+
+                </button>
+
+            </div>
+
+
+            <div class="cards">
+
+                <div class="card">
+
+                    <div class="icone">🚗</div>
+
+                    <p>Veículos estacionados</p>
+
+                    <h2 id="total">
+                        0
+                    </h2>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="icone">🅿️</div>
+
+                    <p>Vagas disponíveis</p>
+
+                    <h2 id="disponiveis">
+                        30
+                    </h2>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="icone">💰</div>
+
+                    <p>Faturamento</p>
+
+                    <h2 id="faturamento">
+                        R$ 0,00
+                    </h2>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="icone">🚪</div>
+
+                    <p>Saídas</p>
+
+                    <h2 id="saidas">
+                        0
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="painel">
+
+                <h3>
+                    🚘 Veículos estacionados
+                </h3>
+
+                <br>
+
+                <div id="resumo">
+                    Nenhum veículo estacionado.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =============================
+             VEÍCULOS
+        ============================== -->
+
+        <section
+            id="veiculos"
+            class="secao">
+
+            <div class="topo">
+
+                <div>
+                    <h2>Veículos</h2>
+
+                    <p>
+                        Controle de entrada e saída
+                    </p>
+                </div>
+
+                <button
+                    class="btn-principal"
+                    onclick="abrirModal()">
+
+                    + Novo veículo
+
+                </button>
+
+            </div>
+
+
+            <div class="painel">
+
+                <input
+                    class="pesquisa"
+                    id="pesquisa"
+                    placeholder="🔍 Pesquisar placa, modelo ou proprietário..."
+                    oninput="renderizar()"
+                >
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>PLACA</th>
+                            <th>MODELO</th>
+                            <th>PROPRIETÁRIO</th>
+                            <th>VAGA</th>
+                            <th>ENTRADA</th>
+                            <th>STATUS</th>
+                            <th>AÇÃO</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="tabela"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- =============================
+             VAGAS
+        ============================== -->
+
+        <section
+            id="vagas"
+            class="secao">
+
+            <div class="topo">
+
+                <div>
+                    <h2>Mapa de vagas</h2>
+
+                    <p>
+                        Controle visual das vagas
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="painel">
+
+                <div
+                    class="vagas"
+                    id="mapaVagas">
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+
+<!-- ================================
+     MODAL
+================================ -->
+
+<div class="modal" id="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-topo">
+
+            <div>
+
+                <h2>
+                    Registrar entrada
+                </h2>
+
+                <p>
+                    Cadastre um veículo
+                </p>
+
+            </div>
+
+            <button
+                class="fechar"
+                onclick="fecharModal()">
+                ×
+            </button>
+
+        </div>
+
+
+        <form
+            class="formulario"
+            onsubmit="cadastrar(event)">
+
+            <div>
+
+                <label>Placa</label>
+
+                <input
+                    type="text"
+                    id="placa"
+                    placeholder="ABC-1234"
+                    required
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>Modelo</label>
+
+                <input
+                    type="text"
+                    id="modelo"
+                    placeholder="Honda Civic"
+                    required
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>Proprietário</label>
+
+                <input
+                    type="text"
+                    id="proprietario"
+                    placeholder="Nome completo"
+                    required
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>Vaga</label>
+
+                <select
+                    id="vaga"
+                    required>
+                </select>
+
+            </div>
+
+
+            <button>
+                🚗 Registrar entrada
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* ================================
+       CONFIGURAÇÕES
+    ================================= */
+
+    const LOGIN = "admin";
+    const SENHA = "1234";
+
+    const TOTAL_VAGAS = 30;
+    const VALOR_HORA = 10;
+
+    let veiculos = [];
+    let historico = [];
+
+
+    /* ================================
+       LOGIN
+    ================================= */
+
+    function entrar(event) {
+
+        event.preventDefault();
+
+        const usuario =
+            document.getElementById("usuario").value;
+
+        const senha =
+            document.getElementById("senha").value;
+
+        if (
+            usuario === LOGIN &&
+            senha === SENHA
+        ) {
+
+            document.getElementById("login")
+                .style.display = "none";
+
+            document.getElementById("sistema")
+                .style.display = "block";
+
+            atualizar();
+
+        } else {
+
+            document.getElementById("erro")
+                .style.display = "block";
+
+        }
+
+    }
+
+
+    /* ================================
+       SAIR
+    ================================= */
+
+    function sair() {
+
+        if (
+            confirm("Deseja sair do sistema?")
+        ) {
+
+            document.getElementById("sistema")
+                .style.display = "none";
+
+            document.getElementById("login")
+                .style.display = "flex";
+
+            document.getElementById("usuario")
+                .value = "";
+
+            document.getElementById("senha")
+                .value = "";
+
+        }
+
+    }
+
+
+    /* ================================
+       MENU
+    ================================= */
+
+    function pagina(nome, botao) {
+
+        document
+            .querySelectorAll(".secao")
+            .forEach(secao => {
+
+                secao.classList.remove("ativa");
+
+            });
+
+
+        document
+            .getElementById(nome)
+            .classList.add("ativa");
+
+
+        document
+            .querySelectorAll(".menu button")
+            .forEach(btn => {
+
+                btn.classList.remove("ativo");
+
+            });
+
+
+        botao.classList.add("ativo");
+
+    }
+
+
+    /* ================================
+       MODAL
+    ================================= */
+
+    function abrirModal() {
+
+        atualizarVagas();
+
+        document
+            .getElementById("modal")
+            .classList.add("aberto");
+
+    }
+
+
+    function fecharModal() {
+
+        document
+            .getElementById("modal")
+            .classList.remove("aberto");
+
+    }
+
+
+    /* ================================
+       VAGAS
+    ================================= */
+
+    function atualizarVagas() {
+
+        const select =
+            document.getElementById("vaga");
+
+        const ocupadas =
+            veiculos.map(v => v.vaga);
+
+
+        select.innerHTML =
+            '<option value="">Selecione uma vaga</option>';
+
+
+        for (
+            let i = 1;
+            i <= TOTAL_VAGAS;
+            i++
+        ) {
+
+            if (!ocupadas.includes(i)) {
+
+                select.innerHTML +=
+                    `<option value="${i}">
+                        Vaga ${i}
+                    </option>`;
+
+            }
+
+        }
+
+    }
+
+
+    /* ================================
+       CADASTRAR VEÍCULO
+    ================================= */
+
+    function cadastrar(event) {
+
+        event.preventDefault();
+
+
+        const placa =
+            document.getElementById("placa")
+                .value
+                .trim()
+                .toUpperCase();
+
+        const modelo =
+            document.getElementById("modelo")
+                .value
+                .trim();
+
+        const proprietario =
+            document.getElementById("proprietario")
+                .value
+                .trim();
+
+        const vaga =
+            Number(
+                document.getElementById("vaga")
+                    .value
+            );
+
+
+        if (
+            veiculos.some(
+                v => v.placa === placa
+            )
+        ) {
+
+            alert(
+                "⚠️ Este veículo já está estacionado!"
+            );
+
+            return;
+
+        }
+
+
+        const agora = new Date();
+
+
+        veiculos.push({
+
+            id: Date.now(),
+
+            placa: placa,
+
+            modelo: modelo,
+
+            proprietario: proprietario,
+
+            vaga: vaga,
+
+            entrada:
+                agora.toLocaleTimeString(
+                    "pt-BR",
+                    {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }
+                ),
+
+            timestamp:
+                agora.getTime()
+
+        });
+
+
+        document
+            .querySelector(".formulario")
+            .reset();
+
+
+        fecharModal();
+
+        atualizar();
+
+
+        alert(
+            "✅ Veículo cadastrado com sucesso!"
+        );
+
+    }
+
+
+    /* ================================
+       SAÍDA
+    ================================= */
+
+    function saida(id) {
+
+        const index =
+            veiculos.findIndex(
+                v => v.id === id
+            );
+
+
+        if (index === -1) {
+            return;
+        }
+
+
+        const veiculo =
+            veiculos[index];
+
+
+        const agora = new Date();
+
+
+        let horas =
+            Math.ceil(
+                (
+                    agora.getTime()
+                    -
+                    veiculo.timestamp
+                )
+                /
+                (1000 * 60 * 60)
+            );
+
+
+        if (horas < 1) {
+            horas = 1;
+        }
+
+
+        const valor =
+            horas * VALOR_HORA;
+
+
+        const confirmar =
+            confirm(
+                `🚗 PLACA: ${veiculo.placa}\n\n` +
+                `🅿️ Vaga: ${veiculo.vaga}\n\n` +
+                `⏱️ Tempo: ${horas} hora(s)\n\n` +
+                `💰 Valor: R$ ${valor.toFixed(2)}\n\n` +
+                `Confirmar saída?`
+            );
+
+
+        if (!confirmar) {
+            return;
+        }
+
+
+        historico.push({
+            ...veiculo,
+            valor: valor
+        });
+
+
+        veiculos.splice(index, 1);
+
+
+        atualizar();
+
+
+        alert(
+            "✅ Saída registrada!\n\n" +
+            "Valor: R$ " +
+            valor.toFixed(2)
+        );
+
+    }
+
+
+    /* ================================
+       TABELA
+    ================================= */
+
+    function renderizar() {
+
+        const tabela =
+            document.getElementById("tabela");
+
+        const pesquisa =
+            (
+                document.getElementById("pesquisa")
+                    ?.value || ""
+            ).toLowerCase();
+
+
+        tabela.innerHTML = "";
+
+
+        const lista =
+            veiculos.filter(v =>
+
+                v.placa
+                    .toLowerCase()
+                    .includes(pesquisa)
+
+                ||
+
+                v.modelo
+                    .toLowerCase()
+                    .includes(pesquisa)
+
+                ||
+
+                v.proprietario
+                    .toLowerCase()
+                    .includes(pesquisa)
+
+            );
+
+
+        if (lista.length === 0) {
+
+            tabela.innerHTML = `
+                <tr>
+                    <td colspan="7"
+                        style="text-align:center;padding:30px">
+
+                        🚗 Nenhum veículo encontrado.
+
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        lista.forEach(v => {
+
+            tabela.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            ${v.placa}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${v.modelo}
+                    </td>
+
+                    <td>
+                        ${v.proprietario}
+                    </td>
+
+                    <td>
+                        🅿️ ${v.vaga}
+                    </td>
+
+                    <td>
+                        ${v.entrada}
+                    </td>
+
+                    <td>
+                        <span class="status">
+                            ● Estacionado
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-saida"
+                            onclick="saida(${v.id})">
+
+                            🚪 Saída
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+    }
+
+
+    /* ================================
+       ATUALIZAR DASHBOARD
+    ================================= */
+
+    function atualizar() {
+
+        const ocupadas =
+            veiculos.length;
+
+        const disponiveis =
+            TOTAL_VAGAS - ocupadas;
+
+
+        const faturamento =
+            historico.reduce(
+                (total, item) =>
+                    total + item.valor,
+                0
+            );
+
+
+        document.getElementById("total")
+            .textContent = ocupadas;
+
+
+        document.getElementById("disponiveis")
+            .textContent = disponiveis;
+
+
+        document.getElementById("faturamento")
+            .textContent =
+                "R$ " +
+                faturamento
+                    .toFixed(2)
+                    .replace(".", ",");
+
+
+        document.getElementById("saidas")
+            .textContent =
+                historico.length;
+
+
+        renderizar();
+
+        renderizarMapa();
+
+        resumo();
+
+        atualizarVagas();
+
+    }
+
+
+    /* ================================
+       RESUMO
+    ================================= */
+
+    function resumo() {
+
+        const area =
+            document.getElementById("resumo");
+
+
+        if (veiculos.length === 0) {
+
+            area.innerHTML =
+                "🚗 Nenhum veículo estacionado.";
+
+            return;
+
+        }
+
+
+        area.innerHTML = "";
+
+
+        veiculos
+            .slice()
+            .reverse()
+            .slice(0, 5)
+            .forEach(v => {
+
+                area.innerHTML += `
+
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        padding:15px;
+                        border-bottom:1px solid #e2e8f0;
+                    ">
+
+                        <div>
+
+                            <strong>
+                                ${v.placa}
+                            </strong>
+
+                            <br>
+
+                            <small>
+                                ${v.modelo}
+                                -
+                                ${v.proprietario}
+                            </small>
+
+                        </div>
+
+                        <strong>
+                            🅿️ ${v.vaga}
+                        </strong>
+
+                    </div>
+
+                `;
+
+            });
+
+    }
+
+
+    /* ================================
+       MAPA
+    ================================= */
+
+    function renderizarMapa() {
+
+        const mapa =
+            document.getElementById("mapaVagas");
+
+        mapa.innerHTML = "";
+
+
+        for (
+            let i = 1;
+            i <= TOTAL_VAGAS;
+            i++
+        ) {
+
+            const veiculo =
+                veiculos.find(
+                    v => v.vaga === i
+                );
+
+
+            mapa.innerHTML += `
+
+                <div class="vaga
+                    ${veiculo ? "ocupada" : ""}">
+
+                    <strong>
+                        ${i}
+                    </strong>
+
+                    <span>
+                        ${
+                            veiculo
+                                ? veiculo.placa
+                                : "Disponível"
+                        }
+                    </span>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    /* Inicializar */
+
+    atualizar();
+
+</script>
+
+</body>
+</html>
